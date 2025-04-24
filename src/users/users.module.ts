@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { UsersController } from './controller/users.controller';
 import { UsersService } from './service/users.service';
-import { ResponseInterceptor } from './interceptor/response.interceptor';
+import { ResponseInterceptor } from '../common/interceptor/response.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({

@@ -1,4 +1,9 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+} from '@nestjs/common';
 import { map, Observable } from 'rxjs';
 
 @Injectable()
@@ -7,7 +12,7 @@ export class ResponseInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data: any) => ({
         success: true,
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         data,
       })),
