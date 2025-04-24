@@ -20,4 +20,5 @@ export type UserType = {
   role: UserRole;
   birthdate: string;
   createdAt?: string;
+  updatedAt?: string;
 };

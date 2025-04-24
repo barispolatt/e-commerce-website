@@ -1,9 +1,12 @@
 import {
+  IsBoolean,
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsStrongPassword,
 } from 'class-validator';
+import { UserRole } from '../../common/utils/types';
 
 export class CreateUserDto {
   @IsNotEmpty({ message: 'Name is required' })
@@ -16,4 +19,10 @@ export class CreateUserDto {
   password: string;
   @IsOptional()
   birthdate: Date;
+  @IsBoolean()
+  @IsOptional()
+  isActive?: boolean = true;
+  @IsOptional()
+  @IsEnum(UserRole)
+  role?: UserRole;
 }
