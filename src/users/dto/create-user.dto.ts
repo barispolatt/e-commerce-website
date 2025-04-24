@@ -15,5 +15,5 @@ export class CreateUserDto {
   @IsStrongPassword({}, { message: 'Password is weak' })
   password: string;
   @IsOptional()
-  birthdate: string;
+  birthdate: Date;
 }

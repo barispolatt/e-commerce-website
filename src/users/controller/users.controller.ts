@@ -9,10 +9,15 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
 import { SortOrder } from '../../common/utils/types';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { ConvertIsoToDatePipe } from '../pipe/convert-iso-to-date.pipe';
+import { SuperAdminGuard } from '../guard/super-admin.guard';
+import { ResponseInterceptor } from '../interceptor/response.interceptor';
 
 @Controller('users') // localhost:3000/users
 export class UsersController {
@@ -21,6 +26,7 @@ export class UsersController {
   }
 
   @Get()
+  @UseInterceptors(ResponseInterceptor)
   getAllUsers(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
@@ -49,6 +55,7 @@ export class UsersController {
     }
   }
   @Delete(':id')
+  @UseGuards(SuperAdminGuard)
   deleteUser(@Param('id', ParseIntPipe) id: number) {
     const user = this.usersService.deleteUserByID(id);
     if (!user) {
@@ -57,7 +64,7 @@ export class UsersController {
     return user;
   }
   @Post('signup')
-  createUser(@Body() newUser: CreateUserDto) {
+  createUser(@Body(ConvertIsoToDatePipe) newUser: CreateUserDto) {
     const user = this.usersService.createUser(newUser);
     return user;
   }

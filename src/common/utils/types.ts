@@ -6,6 +6,7 @@ export type PaginationOptions = {
   order: SortOrder;
 };
 export enum UserRole {
+  GUEST = 4,
   USER = 3,
   ADMIN = 2,
   SUPER_ADMIN = 1,
@@ -18,4 +19,5 @@ export type UserType = {
   isActive: boolean;
   role: UserRole;
   birthdate: string;
+  createdAt?: string;
 };

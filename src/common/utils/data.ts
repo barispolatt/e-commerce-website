@@ -1,6 +1,6 @@
-import { UserRole } from './types';
+import { UserRole, UserType } from './types';
 
-export const dummyUsers = [
+export const dummyUsers: UserType[] = [
   {
     id: 1,
     name: 'Zehra Duran',

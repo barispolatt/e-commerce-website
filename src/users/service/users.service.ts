@@ -46,6 +46,7 @@ export class UsersService {
     const newUser = {
       id: Math.round(Math.random() * 1000000),
       ...user,
+      birthdate: user.birthdate.toISOString().split('T')[0],
       isActive: true,
       role: UserRole.USER,
       createdAt: new Date().toISOString(),
