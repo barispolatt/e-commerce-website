@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { dummyUsers } from '../../common/utils/data';
 import {
   PaginationOptions,
@@ -6,6 +6,7 @@ import {
   UserType,
 } from '../../common/utils/types';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -62,5 +63,26 @@ export class UsersService {
     };
     this.users.push(newUser);
     return newUser;
+  }
+  updateUser(id: number, updateUserDto: UpdateUserDto): UserType {
+    const userIndex = this.users.findIndex((user) => user.id === id);
+
+    if (userIndex === -1) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    const existingUser = this.users[userIndex];
+
+    const updatedUser: UserType = {
+      ...existingUser,
+      ...updateUserDto,
+      birthdate: updateUserDto.birthdate
+        ? updateUserDto.birthdate.toISOString().split('T')[0]
+        : existingUser.birthdate,
+      updatedAt: new Date().toISOString(),
+    };
+
+    this.users[userIndex] = updatedUser;
+    return updatedUser;
   }
 }

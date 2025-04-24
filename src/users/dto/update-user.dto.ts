@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { UserRole } from '../../common/utils/types';
 
-export class CreateUserDto {
+export class UpdateUserDto {
   @IsNotEmpty({ message: 'Name is required' })
   name?: string;
   @IsNotEmpty({ message: 'Email is required' })
