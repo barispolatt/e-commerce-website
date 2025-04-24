@@ -8,16 +8,24 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
   Query,
   UseGuards,
   UseInterceptors,
+  UsePipes,
 } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
-import { SortOrder } from '../../common/utils/types';
+import {
+  PaginationOptions,
+  SortOrder,
+  UserType,
+} from '../../common/utils/types';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { ConvertIsoToDatePipe } from '../pipe/convert-iso-to-date.pipe';
 import { SuperAdminGuard } from '../guard/super-admin.guard';
 import { ResponseInterceptor } from '../interceptor/response.interceptor';
+import { CapitalizeNamePipe } from '../../common/pipe/capitilize-name.pipe';
+import { UpdateUserDto } from '../dto/update-user.dto';
 
 @Controller('users') // localhost:3000/users
 export class UsersController {
@@ -32,8 +40,14 @@ export class UsersController {
     @Query('limit', ParseIntPipe) limit: number,
     @Query('sort') sort: string,
     @Query('order') order: SortOrder,
-  ) {
-    return this.usersService.getAllUsers({ page, limit, sort, order });
+  ): UserType[] {
+    const options: PaginationOptions = {
+      page: +page,
+      limit: +limit,
+      sort,
+      order,
+    };
+    return this.usersService.getAllUsers(options);
   }
   @Get(':id')
   getUserById(@Param('id', ParseIntPipe) id: number) {
@@ -41,6 +55,7 @@ export class UsersController {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
+    return user;
   }
   @Get(':id/comments/:commentId')
   getUserCommentsById(
@@ -64,8 +79,21 @@ export class UsersController {
     return user;
   }
   @Post('signup')
+  @UsePipes(CapitalizeNamePipe)
   createUser(@Body(ConvertIsoToDatePipe) newUser: CreateUserDto) {
-    const user = this.usersService.createUser(newUser);
+    return this.usersService.createUser(newUser);
+  }
+  @Put(':id')
+  @UseGuards(SuperAdminGuard)
+  @UsePipes(CapitalizeNamePipe)
+  updateUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ): UserType {
+    const user = this.usersService.updateUser(id, updateUserDto);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    }
     return user;
   }
 }
