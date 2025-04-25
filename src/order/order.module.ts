@@ -4,6 +4,6 @@ import { OrderService } from './service/order.service';
 
 @Module({
   controllers: [OrderController],
-  providers: [OrderService]
+  providers: [OrderService],
 })
 export class OrderModule {}

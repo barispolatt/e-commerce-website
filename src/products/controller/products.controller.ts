@@ -54,7 +54,7 @@ export class ProductsController {
       sort,
       order,
     };
-    const products = this.productsService.getProductsByCategory(1, options);
+    const products = this.productsService.searchProducts(query, options);
     if (!products || products.length === 0) {
       throw new HttpException(
         'No products found in this category',

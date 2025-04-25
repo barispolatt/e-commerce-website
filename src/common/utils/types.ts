@@ -37,3 +37,24 @@ export type ProductType = {
     index: number;
   }[];
 };
+export enum OrderStatus {
+  PENDING = 'pending',
+  PROCESSING = 'processing',
+  SHIPPED = 'shipped',
+  DELIVERED = 'delivered',
+  CANCELLED = 'cancelled',
+}
+export type OrderProductType = {
+  productId: number;
+  quantity: number;
+  unitPrice: number;
+};
+export type OrderType = {
+  id: number;
+  userId: number;
+  products: OrderProductType[];
+  totalAmount: number;
+  status: OrderStatus;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+};
