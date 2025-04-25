@@ -6,7 +6,8 @@ import {
   HttpException,
   HttpStatus,
   Param,
-  ParseIntPipe, Patch,
+  ParseIntPipe,
+  Patch,
   Post,
   Put,
   Query,
@@ -17,7 +18,8 @@ import {
 import { UsersService } from '../service/users.service';
 import {
   PaginationOptions,
-  SortOrder, UserRole,
+  SortOrder,
+  UserRole,
   UserType,
 } from '../../common/utils/types';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -103,6 +105,15 @@ export class UsersController {
     @Body('role') role: UserRole,
   ): UserType {
     const user = this.usersService.updateUser(id, { role });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    }
+    return user;
+  }
+  @Get(':email')
+  @UseInterceptors(ResponseInterceptor)
+  async getUserByEmail(@Param('email') email: string): Promise<UserType> {
+    const user: UserType | null = await this.usersService.getUserByEmail(email);
     if (!user) {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }

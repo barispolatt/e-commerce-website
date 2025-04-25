@@ -86,4 +86,9 @@ export class UsersService {
     this.users[userIndex] = updatedUser;
     return updatedUser;
   }
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async getUserByEmail(email: string): Promise<UserType | null> {
+    const user = this.users.find((user) => user.email === email);
+    return user ?? null;
+  }
 }
