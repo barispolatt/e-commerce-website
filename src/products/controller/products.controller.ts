@@ -54,7 +54,7 @@ export class ProductsController {
       sort,
       order,
     };
-    const products = this.productsService.getProductsByCategory(id, options);
+    const products = this.productsService.getProductsByCategory(1, options);
     if (!products || products.length === 0) {
       throw new HttpException(
         'No products found in this category',
@@ -64,9 +64,9 @@ export class ProductsController {
     return products;
   }
 
-  @Get('category/:id')
+  @Get('category/:category_id')
   getProductsByCategory(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('category_id', ParseIntPipe) category_id: number,
     @Query('page') page = 1,
     @Query('limit') limit = 10,
     @Query('sort') sort = 'id',
@@ -78,7 +78,8 @@ export class ProductsController {
       sort,
       order,
     };
-    return this.productsService.getProductsByCategory(id, options);
+    console.log(category_id);
+    return this.productsService.getProductsByCategory(category_id, options);
   }
 
   @Get(':id')
