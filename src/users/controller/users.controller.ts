@@ -6,7 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
-  ParseIntPipe,
+  ParseIntPipe, Patch,
   Post,
   Put,
   Query,
@@ -17,7 +17,7 @@ import {
 import { UsersService } from '../service/users.service';
 import {
   PaginationOptions,
-  SortOrder,
+  SortOrder, UserRole,
   UserType,
 } from '../../common/utils/types';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -91,6 +91,18 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
   ): UserType {
     const user = this.usersService.updateUser(id, updateUserDto);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    }
+    return user;
+  }
+  @Patch(':id/role')
+  @UseGuards(SuperAdminGuard)
+  updateUserRole(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('role') role: UserRole,
+  ): UserType {
+    const user = this.usersService.updateUser(id, { role });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
