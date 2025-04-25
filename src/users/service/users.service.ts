@@ -30,6 +30,7 @@ export class UsersService {
   }
   getUserById(id: number) {
     const user = this.users.find((user) => user.id === id);
+    console.log(user);
     return user;
   }
   deleteUserByID(id: number) {
