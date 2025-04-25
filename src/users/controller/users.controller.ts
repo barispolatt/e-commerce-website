@@ -22,7 +22,7 @@ import {
 } from '../../common/utils/types';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { ConvertIsoToDatePipe } from '../pipe/convert-iso-to-date.pipe';
-import { SuperAdminGuard } from '../guard/super-admin.guard';
+import { SuperAdminGuard } from '../../auth/guard/super-admin.guard';
 import { ResponseInterceptor } from '../../common/interceptor/response.interceptor';
 import { CapitalizeNamePipe } from '../../common/pipe/capitilize-name.pipe';
 import { UpdateUserDto } from '../dto/update-user.dto';
