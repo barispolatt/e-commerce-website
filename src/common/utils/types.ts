@@ -84,3 +84,4 @@ export type PaymentType = {
   createdAt: string | Date;
   updatedAt: string | Date;
 };
+
