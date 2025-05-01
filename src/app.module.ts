@@ -21,6 +21,26 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     OrderModule,
     PaymentModule,
     AuthModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'postgres',
+        host: config.get<string>('POSTGRES_HOST'),
+        port: config.get<number>('POSTGRES_PORT'),
+        username: config.get<string>('POSTGRES_USER'),
+        password: config.get<string>('POSTGRES_PASSWORD'),
+        database: config.get<string>('POSTGRES_NAME'),
+        synchronize: true,
+        autoLoadEntities: true,
+        entities: [__dirname + '/**/entities/*.entity.ts'],
+        logging: config.get<string>('NODE_ENV') !== 'production',
+        cache: { duration: config.get<number>('TYPEORM_CACHE_DURATION') },
+      }),
+    }),
   ],
   controllers: [],
   providers: [
