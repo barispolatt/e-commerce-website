@@ -37,27 +37,22 @@ export class UsersController {
 
   @Get()
   @UseInterceptors(ResponseInterceptor)
-  getAllUsers(
+  findAll(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
     @Query('sort') sort: string,
     @Query('order') order: SortOrder,
-  ): UserType[] {
+  ) {
     const options: PaginationOptions = {
       page: +page,
       limit: +limit,
       sort,
       order,
     };
-    return this.usersService.getAllUsers(options);
   }
   @Get(':id')
   getUserById(@Param('id', ParseIntPipe) id: number) {
     const user = this.usersService.getUserById(id);
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
-    }
-    return user;
   }
   @Get(':id/comments/:commentId')
   getUserCommentsById(
@@ -67,18 +62,11 @@ export class UsersController {
     console.log(id);
     console.log(commentId);
     const result = this.usersService.getUserCommentsById(id);
-    if (!result) {
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
-    }
   }
   @Delete(':id')
   @UseGuards(SuperAdminGuard)
   deleteUser(@Param('id', ParseIntPipe) id: number) {
     const user = this.usersService.deleteUserByID(id);
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
-    }
-    return user;
   }
   @Post('signup')
   @UsePipes(CapitalizeNamePipe)
@@ -91,32 +79,15 @@ export class UsersController {
   updateUser(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
-  ): UserType {
+  ) {
     const user = this.usersService.updateUser(id, updateUserDto);
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
-    }
-    return user;
   }
   @Patch(':id/role')
   @UseGuards(SuperAdminGuard)
   updateUserRole(
     @Param('id', ParseIntPipe) id: number,
     @Body('role') role: UserRole,
-  ): UserType {
+  ) {
     const user = this.usersService.updateUser(id, { role });
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
-    }
-    return user;
-  }
-  @Get(':email')
-  @UseInterceptors(ResponseInterceptor)
-  async getUserByEmail(@Param('email') email: string): Promise<UserType> {
-    const user: UserType | null = await this.usersService.getUserByEmail(email);
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
-    }
-    return user;
   }
 }

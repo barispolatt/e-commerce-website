@@ -15,19 +15,24 @@ export class UsersService {
   findAll(options: PaginationOptions) {
 
   }
+
   getUserById(id: number) {
 
   }
+
   deleteUserByID(id: number) {
 
   }
+
   getUserCommentsById(id: number) {
 
   }
+
   createUser(user: CreateUserDto) {
 
   }
-  updateUser(id: number, updateUserDto: UpdateUserDto): {
+
+  updateUser(id: number, updateUserDto: UpdateUserDto) {
 
   }
 }
