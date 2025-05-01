@@ -20,7 +20,7 @@ export class User extends BaseEntityWithName {
   birthdate: Date;
 
   constructor(base: Partial<User>) {
-    super(base);
+    super();
     Object.assign(this, { ...base });
   }
 }

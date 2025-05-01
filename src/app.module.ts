@@ -13,10 +13,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [
     UsersModule,
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
-    }),
     ProductsModule,
     OrderModule,
     PaymentModule,
@@ -37,7 +33,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         synchronize: true,
         autoLoadEntities: true,
         entities: [__dirname + '/**/entities/*.entity.ts'],
-        logging: config.get<string>('NODE_ENV') !== 'production',
+        logging: true,
         cache: { duration: config.get<number>('TYPEORM_CACHE_DURATION') },
       }),
     }),
