@@ -1,20 +1,9 @@
 import { UserRole } from '../../common/utils/types';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity } from 'typeorm';
+import { BaseEntityWithName } from '../../common/entities/BaseEntityWithName';
 
 @Entity('users')
-export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column({ type: 'varchar', length: 150, unique: false })
-  name: string;
-
+export class User extends BaseEntityWithName {
   @Column({ type: 'varchar', length: 200, unique: true })
   email: string;
 
@@ -24,12 +13,14 @@ export class User {
   @Column({ type: 'boolean', default: false })
   isActive: string;
 
-  @CreateDateColumn({ type: 'timestamp' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ type: 'timestamp' })
-  updatedAt: Date;
-
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;
+
+  @Column({ type: 'timestamp', nullable: true })
+  birthdate: Date;
+
+  constructor(base: Partial<User>) {
+    super(base);
+    Object.assign(this, { ...base });
+  }
 }
