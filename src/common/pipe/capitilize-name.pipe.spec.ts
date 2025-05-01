@@ -1,7 +1,7 @@
-import { CapitilizeNamePipe } from './capitilize-name.pipe';
+import { CapitalizeNamePipe } from './capitilize-name.pipe';
 
-describe('CapitilizeNamePipe', () => {
+describe('CapitalizeNamePipe', () => {
   it('should be defined', () => {
-    expect(new CapitilizeNamePipe()).toBeDefined();
+    expect(new CapitalizeNamePipe()).toBeDefined();
   });
 });
