@@ -1,6 +1,7 @@
 import { BaseEntityWithName } from '../../common/entities/BaseEntityWithName';
-import { Column } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 
+@Entity('products')
 export class Product extends BaseEntityWithName {
   @Column({ type: 'varchar', length: 255, unique: true })
   description: string;

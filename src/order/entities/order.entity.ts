@@ -1,10 +1,14 @@
 import { BaseEntity } from '../../common/entities/BaseEntity';
-import { Column } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
 
+@Entity('orders')
 export class Order extends BaseEntity {
-  userID: number;
   @Column({ type: 'int' })
   totalPrice: number;
+
+  @ManyToOne(() => User, (user) => user.orders, { onDelete: 'CASCADE' })
+  user: User;
 
   constructor(dto: Partial<Order>) {
     super();

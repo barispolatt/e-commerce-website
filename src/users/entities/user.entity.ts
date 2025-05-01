@@ -1,6 +1,7 @@
 import { UserRole } from '../../common/utils/types';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntityWithName } from '../../common/entities/BaseEntityWithName';
+import { Order } from '../../order/entities/order.entity';
 
 @Entity('users')
 export class User extends BaseEntityWithName {
@@ -18,6 +19,9 @@ export class User extends BaseEntityWithName {
 
   @Column({ type: 'timestamp', nullable: true })
   birthdate: Date;
+
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
 
   constructor(base: Partial<User>) {
     super();
