@@ -6,7 +6,8 @@ export type PaginationOptions = {
   order: SortOrder;
 };
 export enum UserRole {
-  GUEST = 4,
+  GUEST = 5,
+  SELLER = 4,
   USER = 3,
   ADMIN = 2,
   SUPER_ADMIN = 1,
@@ -84,4 +85,3 @@ export type PaymentType = {
   createdAt: string | Date;
   updatedAt: string | Date;
 };
-

@@ -1,6 +1,7 @@
 import { BaseEntityWithName } from '../../common/entities/BaseEntityWithName';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { ProductImage } from './product-image.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity('products')
 export class Product extends BaseEntityWithName {
@@ -16,11 +17,17 @@ export class Product extends BaseEntityWithName {
   @Column({ type: 'boolean', default: false })
   isActive: boolean;
 
+  @OneToMany(() => ProductImage, (productImage) => productImage.product, {})
+  images: ProductImage[];
+
+  @ManyToOne(() => User, (user) => user.productsSold, { onDelete: 'SET NULL' })
+  seller: User;
+
+  @Column({ type: 'boolean', default: false })
+  isDeleted: boolean;
+
   constructor(productDTO: Partial<Product>) {
     super();
     Object.assign(this, { ...productDTO });
   }
-
-  @OneToMany(() => ProductImage, (productImage) => productImage.product, {})
-  images: ProductImage[];
 }
