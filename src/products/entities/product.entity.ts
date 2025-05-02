@@ -2,6 +2,7 @@ import { BaseEntityWithName } from '../../common/entities/BaseEntityWithName';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { ProductImage } from './product-image.entity';
 import { User } from '../../users/entities/user.entity';
+import { OrderItem } from '../../order/entities/order-item.entity';
 
 @Entity('products')
 export class Product extends BaseEntityWithName {
@@ -25,6 +26,11 @@ export class Product extends BaseEntityWithName {
 
   @Column({ type: 'boolean', default: false })
   isDeleted: boolean;
+
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.product, {
+    onDelete: 'CASCADE',
+  })
+  orderItems: OrderItem[];
 
   constructor(productDTO: Partial<Product>) {
     super();
