@@ -13,7 +13,7 @@ export class User extends BaseEntityWithName {
   password: string;
 
   @Column({ type: 'boolean', default: false })
-  isActive: string;
+  isActive: boolean;
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;

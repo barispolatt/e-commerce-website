@@ -1,38 +1,32 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { dummyUsers } from '../../common/utils/data';
-import {
-  PaginationOptions,
-  UserRole,
-  UserType,
-} from '../../common/utils/types';
+import { Injectable } from '@nestjs/common';
+import { PaginationOptions } from '../../common/utils/types';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { EntityManager } from 'typeorm';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  private users = [...dummyUsers];
+  constructor(private readonly entityManager: EntityManager) {}
 
-  findAll(options: PaginationOptions) {
-
+  async findAll(options: PaginationOptions) {
+    return await this.entityManager.find(User, {
+      where: { isActive: true },
+      order: { id: 'ASC' },
+    });
   }
 
-  getUserById(id: number) {
-
+  async createUser(createUserDto: CreateUserDto) {
+    const newUser = new User(createUserDto);
+    const savedUser = await this.entityManager.save(newUser);
+    console.log(`User created: ${savedUser.id}`);
+    return savedUser;
   }
+  getUserById(id: number) {}
 
-  deleteUserByID(id: number) {
+  deleteUserByID(id: number) {}
 
-  }
+  getUserCommentsById(id: number) {}
 
-  getUserCommentsById(id: number) {
-
-  }
-
-  createUser(user: CreateUserDto) {
-
-  }
-
-  updateUser(id: number, updateUserDto: UpdateUserDto) {
-
-  }
+  updateUser(id: number, updateUserDto: UpdateUserDto) {}
 }

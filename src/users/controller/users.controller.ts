@@ -2,7 +2,7 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
+  Get, HttpCode,
   HttpException,
   HttpStatus,
   Param,
@@ -37,7 +37,7 @@ export class UsersController {
 
   @Get()
   @UseInterceptors(ResponseInterceptor)
-  findAll(
+  async findAll(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
     @Query('sort') sort: string,
@@ -49,6 +49,9 @@ export class UsersController {
       sort,
       order,
     };
+    const users = await this.usersService.findAll(options);
+    console.log('users: ', users);
+    return users;
   }
   @Get(':id')
   getUserById(@Param('id', ParseIntPipe) id: number) {
@@ -68,10 +71,11 @@ export class UsersController {
   deleteUser(@Param('id', ParseIntPipe) id: number) {
     const user = this.usersService.deleteUserByID(id);
   }
-  @Post('signup')
+  @Post('register')
   @UsePipes(CapitalizeNamePipe)
-  createUser(@Body(ConvertIsoToDatePipe) newUser: CreateUserDto) {
-    return this.usersService.createUser(newUser);
+  @HttpCode(HttpStatus.CREATED)
+  createUser(@Body(ConvertIsoToDatePipe) createUserDto: CreateUserDto) {
+    return this.usersService.createUser(createUserDto);
   }
   @Put(':id')
   @UseGuards(SuperAdminGuard)

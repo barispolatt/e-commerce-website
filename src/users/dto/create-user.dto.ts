@@ -21,7 +21,7 @@ export class CreateUserDto {
   birthdate: Date;
   @IsBoolean()
   @IsOptional()
-  isActive?: boolean = true;
+  isActive?: boolean = false;
   @IsOptional()
   @IsEnum(UserRole)
   role?: UserRole;
