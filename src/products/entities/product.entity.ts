@@ -1,5 +1,6 @@
 import { BaseEntityWithName } from '../../common/entities/BaseEntityWithName';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
+import { ProductImage } from './product-image.entity';
 
 @Entity('products')
 export class Product extends BaseEntityWithName {
@@ -19,4 +20,7 @@ export class Product extends BaseEntityWithName {
     super();
     Object.assign(this, { ...productDTO });
   }
+
+  @OneToMany(() => ProductImage, (productImage) => productImage.product, {})
+  images: ProductImage[];
 }
