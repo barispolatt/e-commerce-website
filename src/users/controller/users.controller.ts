@@ -2,7 +2,8 @@ import {
   Body,
   Controller,
   Delete,
-  Get, HttpCode,
+  Get,
+  HttpCode,
   HttpException,
   HttpStatus,
   Param,
@@ -54,9 +55,10 @@ export class UsersController {
     return users;
   }
   @Get(':id')
-  getUserById(@Param('id', ParseIntPipe) id: number) {
-    const user = this.usersService.getUserById(id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.usersService.findOne(id);
   }
+
   @Get(':id/comments/:commentId')
   getUserCommentsById(
     @Param('id', ParseIntPipe) id: number,
@@ -68,9 +70,10 @@ export class UsersController {
   }
   @Delete(':id')
   @UseGuards(SuperAdminGuard)
-  deleteUser(@Param('id', ParseIntPipe) id: number) {
-    const user = this.usersService.deleteUserByID(id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.usersService.remove(id);
   }
+
   @Post('register')
   @UsePipes(CapitalizeNamePipe)
   @HttpCode(HttpStatus.CREATED)
