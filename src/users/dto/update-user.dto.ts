@@ -2,19 +2,18 @@ import {
   IsBoolean,
   IsEmail,
   IsEnum,
-  IsNotEmpty,
   IsOptional,
   IsStrongPassword,
 } from 'class-validator';
 import { UserRole } from '../../common/utils/types';
 
 export class UpdateUserDto {
-  @IsNotEmpty({ message: 'Name is required' })
+  @IsOptional()
   name?: string;
-  @IsNotEmpty({ message: 'Email is required' })
+  @IsOptional()
   @IsEmail({}, { message: 'Email is required' })
   email?: string;
-  @IsNotEmpty({ message: 'Password is required' })
+  @IsOptional()
   @IsStrongPassword({}, { message: 'Password is weak' })
   password?: string;
   @IsOptional()

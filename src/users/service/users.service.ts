@@ -68,8 +68,6 @@ export class UsersService {
     return userResponse;
   }
 
-  deleteUserByID(id: number, updateUserDto: UpdateUserDto) {}
-
   async remove(id: number) {
     const user = await this.userRepository.findOne({
       where: { id },
@@ -89,7 +87,18 @@ export class UsersService {
     });
     return userResponse;
   }
+
   getUserCommentsById(id: number) {}
 
-  updateUser(id: number, updateUserDto: UpdateUserDto) {}
+  async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new HttpException(
+        `User with id ${id} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const updatedUser = this.userRepository.merge(user, updateUserDto);
+    return await this.userRepository.save(updatedUser);
+  }
 }

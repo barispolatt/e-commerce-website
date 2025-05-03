@@ -21,7 +21,6 @@ import {
   PaginationOptions,
   SortOrder,
   UserRole,
-  UserType,
 } from '../../common/utils/types';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { ConvertIsoToDatePipe } from '../pipe/convert-iso-to-date.pipe';
@@ -77,18 +76,20 @@ export class UsersController {
   @Post('register')
   @UsePipes(CapitalizeNamePipe)
   @HttpCode(HttpStatus.CREATED)
-  createUser(@Body(ConvertIsoToDatePipe) createUserDto: CreateUserDto) {
-    return this.usersService.createUser(createUserDto);
+  async createUser(@Body(ConvertIsoToDatePipe) createUserDto: CreateUserDto) {
+    return await this.usersService.createUser(createUserDto);
   }
   @Put(':id')
   @UseGuards(SuperAdminGuard)
   @UsePipes(CapitalizeNamePipe)
-  updateUser(
+  async updateUser(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    const user = this.usersService.updateUser(id, updateUserDto);
+    const user = await this.usersService.updateUser(id, updateUserDto);
+    return user;
   }
+
   @Patch(':id/role')
   @UseGuards(SuperAdminGuard)
   updateUserRole(
