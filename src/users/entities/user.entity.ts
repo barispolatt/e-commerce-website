@@ -3,6 +3,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntityWithName } from '../../common/entities/BaseEntityWithName';
 import { Order } from '../../order/entities/order.entity';
 import { Product } from '../../products/entities/product.entity';
+import { Comment } from './comment.entity';
 
 @Entity('users')
 export class User extends BaseEntityWithName {
@@ -28,6 +29,11 @@ export class User extends BaseEntityWithName {
     onDelete: 'CASCADE',
   })
   productsSold: Product[];
+
+  @OneToMany(() => Comment, (comment) => comment.comment, {
+    onDelete: 'CASCADE',
+  })
+  userComments: Comment[];
 
   constructor(base: Partial<User>) {
     super();
