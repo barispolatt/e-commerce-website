@@ -12,6 +12,8 @@ export class UsersService {
   constructor(
     private readonly entityManager: EntityManager,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    //@InjectRepository(Comment)
+    //private readonly commentRepository: Repository<Comment>,
   ) {}
 
   async findAll({
@@ -88,7 +90,24 @@ export class UsersService {
     return userResponse;
   }
 
-  getUserCommentsById(id: number) {}
+  //async getCommentsById(id: number): Promise<Comment[]> {
+  // First check if the user exists
+  //const user = await this.userRepository.findOne({
+  // where: { id },
+  //});
+  //if (!user) {
+  // throw new HttpException(
+  // `User with id ${id} not found`,
+  // HttpStatus.NOT_FOUND,
+  //);
+  //}
+  //const comments = await this.commentRepository.find({
+  // where: { user: { id } },
+  //relations: ['user'],
+  //});
+
+  //return comments;
+  //}
 
   async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id } });

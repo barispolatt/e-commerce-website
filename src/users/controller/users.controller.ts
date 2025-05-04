@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   HttpCode,
-  HttpException,
   HttpStatus,
   Param,
   ParseIntPipe,
@@ -58,15 +57,15 @@ export class UsersController {
     return await this.usersService.findOne(id);
   }
 
-  @Get(':id/comments/:commentId')
-  getUserCommentsById(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('commentId', ParseIntPipe) commentId: number,
-  ) {
-    console.log(id);
-    console.log(commentId);
-    const result = this.usersService.getUserCommentsById(id);
-  }
+  //@Get(':id/comments/:commentId')
+  //getUserCommentsById(
+  //  @Param('id', ParseIntPipe) id: number,
+  //  @Param('commentId', ParseIntPipe) commentId: number,
+  //) {
+  //  console.log(id);
+  //  console.log(commentId);
+  //  const result = this.usersService.getUserCommentsById(id);
+  //}
   @Delete(':id')
   @UseGuards(SuperAdminGuard)
   async remove(@Param('id', ParseIntPipe) id: number) {
@@ -97,5 +96,6 @@ export class UsersController {
     @Body('role') role: UserRole,
   ) {
     const user = this.usersService.updateUser(id, { role });
+    return user;
   }
 }

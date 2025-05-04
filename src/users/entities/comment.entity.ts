@@ -10,7 +10,7 @@ export class Comment extends BaseEntity {
     onDelete: 'CASCADE',
     eager: true,
   })
-  comment: Comment;
+  user: User;
 
   constructor(base: Partial<Comment>) {
     super();

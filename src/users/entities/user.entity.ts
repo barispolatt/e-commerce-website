@@ -30,7 +30,7 @@ export class User extends BaseEntityWithName {
   })
   productsSold: Product[];
 
-  @OneToMany(() => Comment, (comment) => comment.comment, {
+  @OneToMany(() => Comment, (comment) => comment.user, {
     onDelete: 'CASCADE',
   })
   userComments: Comment[];
