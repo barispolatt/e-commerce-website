@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PaginationOptions } from '../../common/utils/types';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { EntityManager, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserResponseDto } from '../dto/user-response.dto';
@@ -10,7 +10,6 @@ import { UserResponseDto } from '../dto/user-response.dto';
 @Injectable()
 export class UsersService {
   constructor(
-    private readonly entityManager: EntityManager,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     //@InjectRepository(Comment)
     //private readonly commentRepository: Repository<Comment>,
@@ -46,11 +45,12 @@ export class UsersService {
   }
 
   async createUser(createUserDto: CreateUserDto) {
-    const newUser = new User(createUserDto);
-    const savedUser = await this.entityManager.save(newUser);
+    const newUser = this.userRepository.create(createUserDto);
+    const savedUser = await this.userRepository.save(newUser);
     console.log(`User created: ${savedUser.id}`);
     return savedUser;
   }
+
   async findOne(id: number) {
     const user = await this.userRepository.findOne({
       where: { id },
@@ -61,13 +61,16 @@ export class UsersService {
         HttpStatus.NOT_FOUND,
       );
     }
-    const userResponse = new UserResponseDto({
+    return new UserResponseDto({
       id: user.id,
       name: user.name,
       email: user.email,
       birthdate: user.birthdate,
     });
-    return userResponse;
+  }
+
+  async findByEmail(email: string) {
+    return this.userRepository.findOne({ where: { email } });
   }
 
   async remove(id: number) {
@@ -81,13 +84,13 @@ export class UsersService {
       );
     }
     await this.userRepository.delete(id);
-    const userResponse = new UserResponseDto({
+
+    return new UserResponseDto({
       id: user.id,
       name: user.name,
       email: user.email,
       birthdate: user.birthdate,
     });
-    return userResponse;
   }
 
   //async getCommentsById(id: number): Promise<Comment[]> {
