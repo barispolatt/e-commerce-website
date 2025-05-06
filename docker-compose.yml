@@ -42,7 +42,7 @@ services:
       - '3000:3000'
     volumes:
       - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - node_modules:/usr/src/app/node_modules
     depends_on:
       - postgres
     environment:
@@ -62,3 +62,5 @@ networks:
 volumes:
   pgdata:
   pgadmin:
+  node_modules:
+

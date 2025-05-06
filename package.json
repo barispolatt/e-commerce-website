@@ -20,6 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "dock:build": "docker compose --env-file .env up --build",
     "dock:up": "docker compose --env-file .env up",
+    "dock:node-reset": "docker compose down && docker volume rm e-commerce-app_node_modules && npm run dock:up",
     "dock:hard-reset": "docker compose down --volumes --remove-orphans && npm run dock:build"
   },
   "dependencies": {
