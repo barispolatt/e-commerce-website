@@ -51,6 +51,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_NAME: ${POSTGRES_NAME}
+      JWT_SECRET: ${JWT_SECRET}
     networks:
       - commerce-network
 

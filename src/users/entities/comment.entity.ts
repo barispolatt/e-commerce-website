@@ -6,11 +6,11 @@ export class Comment extends BaseEntity {
   @Column()
   text: string;
 
-  @ManyToOne(() => User, (comment) => comment.userComments, {
+  /*@ManyToOne(() => User, (comment) => comment.userComments, {
     onDelete: 'CASCADE',
     eager: true,
   })
-  user: User;
+  user: User;*/
 
   constructor(base: Partial<Comment>) {
     super();

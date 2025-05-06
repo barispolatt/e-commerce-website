@@ -6,11 +6,11 @@ export type PaginationOptions = {
   order: SortOrder;
 };
 export enum UserRole {
-  GUEST = 5,
-  SELLER = 4,
-  USER = 3,
-  ADMIN = 2,
-  SUPER_ADMIN = 1,
+  GUEST = 'GUEST',
+  SELLER = 'SELLER',
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+  SUPER_ADMIN = 'SUPER_ADMIN',
 }
 export type UserType = {
   id: number;

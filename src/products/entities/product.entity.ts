@@ -1,5 +1,5 @@
 import { BaseEntityWithName } from '../../common/entities/BaseEntityWithName';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ProductImage } from './product-image.entity';
 import { User } from '../../users/entities/user.entity';
 import { OrderItem } from '../../order/entities/order-item.entity';
@@ -15,17 +15,18 @@ export class Product extends BaseEntityWithName {
   @Column({ type: 'int', default: 0 })
   stock: number;
 
-  @Column({ type: 'boolean', default: false })
+  @Column({ name: 'is_active', type: 'boolean', default: false })
   isActive: boolean;
 
   @OneToMany(() => ProductImage, (productImage) => productImage.product, {})
   images: ProductImage[];
 
   @ManyToOne(() => User, (user) => user.productsSold, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'seller_id' })
   seller: User;
 
-  @Column({ type: 'boolean', default: false })
-  isDeleted: boolean;
+  @Column({ name: 'is_deleted', type: 'boolean', default: false })
+  is_deleted: boolean;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.product, {
     onDelete: 'CASCADE',

@@ -1,3 +1,4 @@
+/*
 import { UserRole, UserType } from './types';
 
 export const dummyUsers: UserType[] = [
@@ -182,6 +183,7 @@ export const dummyUsers: UserType[] = [
     birthdate: '1997-06-28',
   },
 ];
+*/
 
 export const dummyProducts = [
   {

@@ -14,7 +14,7 @@ export class User extends BaseEntityWithName {
   password: string;
 
   @Column({ type: 'boolean', default: false })
-  isActive: boolean;
+  is_active: boolean;
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;
@@ -30,10 +30,10 @@ export class User extends BaseEntityWithName {
   })
   productsSold: Product[];
 
-  @OneToMany(() => Comment, (comment) => comment.user, {
+  /*@OneToMany(() => Comment, (comment) => comment.user, {
     onDelete: 'CASCADE',
   })
-  userComments: Comment[];
+  userComments: Comment[];*/
 
   constructor(base: Partial<User>) {
     super();
