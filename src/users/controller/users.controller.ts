@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpException,
   HttpStatus,
   Param,
   ParseIntPipe,
@@ -52,6 +53,7 @@ export class UsersController {
     console.log('users: ', users);
     return users;
   }
+
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.usersService.findOne(id);
@@ -78,6 +80,7 @@ export class UsersController {
   async createUser(@Body(ConvertIsoToDatePipe) createUserDto: CreateUserDto) {
     return await this.usersService.createUser(createUserDto);
   }
+
   @Put(':id')
   @UseGuards(SuperAdminGuard)
   @UsePipes(CapitalizeNamePipe)
@@ -86,16 +89,19 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
   ) {
     const user = await this.usersService.updateUser(id, updateUserDto);
+    if (!user) throw new HttpException('Invalid ID', HttpStatus.BAD_REQUEST);
     return user;
   }
 
   @Patch(':id/role')
   @UseGuards(SuperAdminGuard)
-  updateUserRole(
+  async updateUserRole(
     @Param('id', ParseIntPipe) id: number,
     @Body('role') role: UserRole,
   ) {
-    const user = this.usersService.updateUser(id, { role });
+    const user = await this.usersService.updateUser(id, { role });
+    if (!user)
+      throw new HttpException('Invalid request', HttpStatus.BAD_REQUEST);
     return user;
   }
 }
