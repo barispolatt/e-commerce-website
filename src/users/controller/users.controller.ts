@@ -28,6 +28,8 @@ import { SuperAdminGuard } from '../../auth/guard/super-admin.guard';
 import { ResponseInterceptor } from '../../common/interceptor/response.interceptor';
 import { CapitalizeNamePipe } from '../../common/pipe/capitilize-name.pipe';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { Roles } from '../../auth/decorator/roles.decorator';
+import { RolesGuard } from '../../auth/guard/roles.guard';
 
 @Controller('users') // localhost:3000/users
 export class UsersController {
@@ -37,6 +39,8 @@ export class UsersController {
 
   @Get()
   @UseInterceptors(ResponseInterceptor)
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.SELLER)
   async findAll(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
@@ -69,7 +73,8 @@ export class UsersController {
   //  const result = this.usersService.getUserCommentsById(id);
   //}
   @Delete(':id')
-  @UseGuards(SuperAdminGuard)
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.SELLER)
   async remove(@Param('id', ParseIntPipe) id: number) {
     return await this.usersService.remove(id);
   }
