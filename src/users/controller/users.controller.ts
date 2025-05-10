@@ -24,12 +24,12 @@ import {
 } from '../../common/utils/types';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { ConvertIsoToDatePipe } from '../pipe/convert-iso-to-date.pipe';
-import { SuperAdminGuard } from '../../auth/guard/super-admin.guard';
 import { ResponseInterceptor } from '../../common/interceptor/response.interceptor';
 import { CapitalizeNamePipe } from '../../common/pipe/capitilize-name.pipe';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { Roles } from '../../auth/decorator/roles.decorator';
 import { RolesGuard } from '../../auth/guard/roles.guard';
+import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
 
 @Controller('users') // localhost:3000/users
 export class UsersController {
@@ -39,8 +39,8 @@ export class UsersController {
 
   @Get()
   @UseInterceptors(ResponseInterceptor)
-  @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.SELLER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   async findAll(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
@@ -63,17 +63,8 @@ export class UsersController {
     return await this.usersService.findOne(id);
   }
 
-  //@Get(':id/comments/:commentId')
-  //getUserCommentsById(
-  //  @Param('id', ParseIntPipe) id: number,
-  //  @Param('commentId', ParseIntPipe) commentId: number,
-  //) {
-  //  console.log(id);
-  //  console.log(commentId);
-  //  const result = this.usersService.getUserCommentsById(id);
-  //}
   @Delete(':id')
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.SELLER)
   async remove(@Param('id', ParseIntPipe) id: number) {
     return await this.usersService.remove(id);
@@ -87,7 +78,8 @@ export class UsersController {
   }
 
   @Put(':id')
-  @UseGuards(SuperAdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @UsePipes(CapitalizeNamePipe)
   async updateUser(
     @Param('id', ParseIntPipe) id: number,
@@ -99,7 +91,8 @@ export class UsersController {
   }
 
   @Patch(':id/role')
-  @UseGuards(SuperAdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.SUPER_ADMIN)
   async updateUserRole(
     @Param('id', ParseIntPipe) id: number,
     @Body('role') role: UserRole,
