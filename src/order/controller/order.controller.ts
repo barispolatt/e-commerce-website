@@ -16,15 +16,19 @@ import {
   InternalServerErrorException,
   Logger,
   UseInterceptors,
+  Req,
+  ForbiddenException,
 } from '@nestjs/common';
 import { TransformResponseInterceptor } from '../../common/interceptor/transform-response-interceptor.interceptor';
 import { OrderService } from '../service/order.service';
 import { CreateOrderDto } from '../dto/create-order.dto';
-import { OrderType } from '../../common/utils/types';
-import { AdminGuard } from '../../auth/guard/admin.guard';
+import { OrderType, UserRole } from '../../common/utils/types';
 import { UpdateOrderDto } from '../dto/update-order.dto';
-import { SuperAdminGuard } from '../../auth/guard/super-admin.guard';
 import { QueryOrderDto } from '../dto/query-order.dto';
+import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
+import { RolesGuard } from '../../auth/guard/roles.guard';
+import { Roles } from '../../auth/decorator/roles.decorator';
+import { User } from '../../users/entities/user.entity';
 
 @Controller('order')
 @UseInterceptors(TransformResponseInterceptor)
@@ -34,11 +38,20 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.USER, UserRole.SELLER)
   @HttpCode(HttpStatus.CREATED)
-  createOrder(@Body() createOrderDto: CreateOrderDto): OrderType {
+  createOrder(
+    @Body() createOrderDto: Omit<CreateOrderDto, 'userId'>,
+    @Req() request: { user: User },
+  ): OrderType {
     try {
-      this.logger.log(`Creating order for user: ${createOrderDto.userId}`);
-      return this.orderService.createOrder(createOrderDto);
+      const fullCreateOrderDto: CreateOrderDto = {
+        ...createOrderDto,
+        userId: request.user.id,
+      };
+      this.logger.log(`Creating order for user: ${fullCreateOrderDto.userId}`);
+      return this.orderService.createOrder(fullCreateOrderDto);
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
@@ -54,10 +67,15 @@ export class OrderController {
   }
 
   @Get()
-  getAllOrders(@Query() query: QueryOrderDto): OrderType[] {
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.USER, UserRole.SELLER, UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  getAllOrders(
+    @Query() query: QueryOrderDto,
+    @Req() request: { user: User },
+  ): OrderType[] {
     try {
       this.logger.log('Fetching all orders with filters');
-      return this.orderService.getAllOrders(query);
+      return this.orderService.getAllOrders(query, request.user);
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
@@ -69,10 +87,24 @@ export class OrderController {
   }
 
   @Get(':id')
-  getOneOrder(@Param('id', ParseIntPipe) id: number): OrderType {
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.USER, UserRole.SELLER, UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  getOneOrder(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() request: { user: User },
+  ): OrderType {
     try {
-      this.logger.log(`Fetching order with ID: ${id}`);
-      return this.orderService.getOneOrder(id);
+      this.logger.log(`Order with ID: ${id}`);
+      const order = this.orderService.getOneOrder(id);
+
+      if (
+        request.user.role !== UserRole.ADMIN &&
+        request.user.role !== UserRole.SUPER_ADMIN &&
+        order.userId !== request.user.id
+      ) {
+        throw new ForbiddenException('Not authorized.');
+      }
+      return order;
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
@@ -87,7 +119,8 @@ export class OrderController {
     }
   }
 
-  @UseGuards(AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @Put(':id')
   updateOrder(
     @Param('id', ParseIntPipe) id: number,
@@ -118,7 +151,8 @@ export class OrderController {
     }
   }
 
-  @UseGuards(SuperAdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.SUPER_ADMIN)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   removeOrder(@Param('id', ParseIntPipe) id: number): void {
