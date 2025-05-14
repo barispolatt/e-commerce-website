@@ -1,12 +1,3 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { PaginationOptions } from '../../common/utils/types';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
-import { Repository } from 'typeorm';
-import { User } from '../entities/user.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { UserResponseDto } from '../dto/user-response.dto';
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -16,7 +7,7 @@ export class UsersService {
   ) {}
 
   async findAll({
-    page = 0,
+    page = 1,
     limit = 5,
     sort = 'id',
     order = 'asc',
