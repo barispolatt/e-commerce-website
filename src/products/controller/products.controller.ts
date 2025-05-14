@@ -14,11 +14,17 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ProductsService } from '../service/products.service';
-import { PaginationOptions, SortOrder } from '../../common/utils/types';
-import { AdminGuard } from '../../auth/guard/admin.guard';
+import {
+  PaginationOptions,
+  SortOrder,
+  UserRole,
+} from '../../common/utils/types';
 import { CapitalizeNamePipe } from '../../common/pipe/capitilize-name.pipe';
 import { CreateProductDto } from '../dto/create-product.dto';
 import { UpdateProductDto } from '../dto/update-product.dto';
+import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
+import { RolesGuard } from '../../auth/guard/roles.guard';
+import { Roles } from '../../auth/decorator/roles.decorator';
 
 @Controller('products')
 export class ProductsController {
@@ -92,14 +98,16 @@ export class ProductsController {
   }
 
   @Post()
-  @UseGuards(AdminGuard) // Restrict to Admin role
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.SELLER)
   @UsePipes(CapitalizeNamePipe)
   createProduct(@Body() createProductDto: CreateProductDto) {
     return this.productsService.createProduct(createProductDto);
   }
 
   @Put(':id')
-  @UseGuards(AdminGuard) // Restrict to Admin role
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.SELLER)
   @UsePipes(CapitalizeNamePipe)
   updateProduct(
     @Param('id', ParseIntPipe) id: number,
@@ -116,7 +124,8 @@ export class ProductsController {
   }
 
   @Delete(':id')
-  @UseGuards(AdminGuard) // Restrict to Admin role
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.SELLER)
   deleteProduct(@Param('id', ParseIntPipe) id: number) {
     const deleted = this.productsService.deleteProduct(id);
     if (!deleted) {
